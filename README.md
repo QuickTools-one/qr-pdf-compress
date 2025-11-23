@@ -1,8 +1,8 @@
-# QR-PDF-Compress
+# @quicktools/pdf-compress
 
 > WebAssembly-based, fully client-side PDF compression library for modern web applications
 
-[![npm version](https://img.shields.io/npm/v/qr-pdf-compress.svg)](https://www.npmjs.com/package/qr-pdf-compress)
+[![npm version](https://img.shields.io/npm/v/@quicktools/pdf-compress.svg)](https://www.npmjs.com/package/@quicktools/pdf-compress)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
@@ -18,13 +18,15 @@
 ## Installation
 
 ```bash
-npm install qr-pdf-compress pdf-lib
+npm install @quicktools/pdf-compress
 ```
+
+The `pdf-lib` dependency is automatically included.
 
 ## Quick Start
 
 ```typescript
-import { compress } from 'qr-pdf-compress';
+import { compress } from '@quicktools/pdf-compress';
 
 // Load PDF file
 const file = await fetch('document.pdf').then(r => r.arrayBuffer());
@@ -59,7 +61,7 @@ Optimizes PDF structure without quality loss. Best for documents with text and v
 ```typescript
 const result = await compress(pdfBuffer, { preset: 'lossless' });
 // or
-import { compressLossless } from 'qr-pdf-compress';
+import { compressLossless } from '@quicktools/pdf-compress';
 const result = await compressLossless(pdfBuffer);
 ```
 
@@ -69,7 +71,7 @@ Smart image compression with minimal quality impact. Preserves text and vectors.
 ```typescript
 const result = await compress(pdfBuffer, { preset: 'balanced' });
 // or
-import { compressBalanced } from 'qr-pdf-compress';
+import { compressBalanced } from '@quicktools/pdf-compress';
 const result = await compressBalanced(pdfBuffer);
 ```
 
@@ -79,14 +81,14 @@ Aggressive compression with optional rasterization. May reduce image quality.
 ```typescript
 const result = await compress(pdfBuffer, { preset: 'max' });
 // or
-import { compressMax } from 'qr-pdf-compress';
+import { compressMax } from '@quicktools/pdf-compress';
 const result = await compressMax(pdfBuffer);
 ```
 
 ## Advanced Options
 
 ```typescript
-import { compress } from 'qr-pdf-compress';
+import { compress } from '@quicktools/pdf-compress';
 
 const result = await compress(pdfBuffer, {
   preset: 'balanced',
@@ -130,7 +132,7 @@ const result = await compress(pdfBuffer, {
 ### React
 
 ```typescript
-import { compress } from 'qr-pdf-compress';
+import { compress } from '@quicktools/pdf-compress';
 import { useState } from 'react';
 
 function PDFCompressor() {
@@ -175,7 +177,7 @@ function PDFCompressor() {
 ```typescript
 'use client'
 
-import { compress } from 'qr-pdf-compress';
+import { compress } from '@quicktools/pdf-compress';
 
 export default function CompressPage() {
   async function handleCompress(file: File) {
@@ -212,7 +214,7 @@ export default function CompressPage() {
   <div id="result"></div>
 
   <script type="module">
-    import { compress } from 'qr-pdf-compress';
+    import { compress } from '@quicktools/pdf-compress';
 
     document.getElementById('pdfInput').addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -245,7 +247,7 @@ export default function CompressPage() {
 
 ## How It Works
 
-QR-PDF-Compress uses a chunked processing approach for reliability and memory efficiency:
+@quicktools/pdf-compress uses a chunked processing approach for reliability and memory efficiency:
 
 1. **Validation**: Checks if input is a valid PDF
 2. **Chunking**: Splits PDF into chunks (default: 10 pages)
@@ -286,7 +288,7 @@ This architecture enables processing of 300-1000+ page PDFs even on mobile devic
 ## Error Handling
 
 ```typescript
-import { compress, CompressionError } from 'qr-pdf-compress';
+import { compress, CompressionError } from '@quicktools/pdf-compress';
 
 try {
   const result = await compress(pdfBuffer, { preset: 'max' });

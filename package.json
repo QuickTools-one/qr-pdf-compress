@@ -1,5 +1,5 @@
 {
-  "name": "qr-pdf-compress",
+  "name": "@quicktools/pdf-compress",
   "version": "1.0.0",
   "description": "WebAssembly-based, fully client-side PDF compression library",
   "type": "module",
@@ -37,9 +37,6 @@
   ],
   "author": "",
   "license": "MIT",
-  "peerDependencies": {
-    "pdf-lib": "^1.17.1"
-  },
   "dependencies": {
     "pdf-lib": "^1.17.1"
   },
