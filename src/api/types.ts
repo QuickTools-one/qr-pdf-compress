@@ -39,8 +39,10 @@ export interface CompressionOptions {
   chunkSize?: number;
   /** Progress callback function */
   onProgress?: (event: ProgressEvent) => void;
-  /** Custom WASM URL (defaults to CDN) */
+  /** Custom WASM URL (defaults to jsdelivr CDN) */
   wasmUrl?: string;
+  /** Custom wasm_exec.js URL (defaults to jsdelivr CDN) */
+  wasmExecUrl?: string;
   /** Enable graceful degradation (fallback to lighter presets on error, default: true) */
   gracefulDegradation?: boolean;
   /** Preserve metadata (default: true for lossless/balanced, false for max) */

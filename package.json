@@ -1,6 +1,6 @@
 {
-  "name": "@quicktools/pdf-compress",
-  "version": "1.0.0",
+  "name": "@quicktoolsone/pdf-compress",
+  "version": "1.0.2",
   "description": "WebAssembly-based, fully client-side PDF compression library",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -16,6 +16,7 @@
   },
   "files": [
     "dist",
+    "src/wasm/build",
     "README.md",
     "LICENSE"
   ],
@@ -35,7 +36,11 @@
     "browser",
     "pdfcpu"
   ],
-  "author": "",
+  "homepage": "https://quicktools.one",
+  "author": {
+    "name": "QuickTools",
+    "url": "https://quicktools.one"
+  },
   "license": "MIT",
   "dependencies": {
     "pdf-lib": "^1.17.1"

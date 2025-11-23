@@ -2,7 +2,7 @@
  * Main compression API
  */
 
-import type { CompressionOptions, CompressionResult, CompressionPreset } from './types';
+import type { CompressionOptions, CompressionResult } from './types';
 import { CompressionError } from './types';
 import { orchestrateCompression } from '../core/orchestrator';
 import { loadWASM } from '../wasm/loader';
@@ -48,6 +48,7 @@ export async function compress(
     chunkSize: options.chunkSize,
     onProgress: options.onProgress,
     wasmUrl: options.wasmUrl,
+    wasmExecUrl: options.wasmExecUrl,
     gracefulDegradation: options.gracefulDegradation !== false,
     preserveMetadata: options.preserveMetadata,
     targetDPI: options.targetDPI,
@@ -73,7 +74,7 @@ export async function compress(
 
   try {
     // Load WASM (will use cached if already loaded)
-    await loadWASM(fullOptions.wasmUrl);
+    await loadWASM(fullOptions.wasmUrl, fullOptions.wasmExecUrl);
   } catch (error) {
     throw new CompressionError(
       'Failed to load compression engine',

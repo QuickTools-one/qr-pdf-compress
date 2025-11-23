@@ -1,5 +1,4 @@
 import type { CompressionPreset } from '../api/types';
-import { getWASMInstance } from './loader';
 
 /**
  * Adapter for pdfcpu WASM compression

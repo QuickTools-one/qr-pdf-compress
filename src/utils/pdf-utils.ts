@@ -65,7 +65,7 @@ export async function extractPages(
     copiedPages.forEach((page) => destPdf.addPage(page));
 
     const pdfBytes = await destPdf.save();
-    return pdfBytes.buffer;
+    return pdfBytes.buffer.slice(0) as ArrayBuffer;
   } catch (error) {
     throw new Error(`Failed to extract pages ${startPage}-${endPage}: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -108,7 +108,7 @@ export async function mergePDFs(
     }
 
     const pdfBytes = await mergedPdf.save();
-    return pdfBytes.buffer;
+    return pdfBytes.buffer.slice(0) as ArrayBuffer;
   } catch (error) {
     throw new Error(`Failed to merge PDFs: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }

@@ -14,7 +14,6 @@ import type {
   CompressionOptions,
   CompressionResult,
   CompressionStats,
-  CompressionPreset,
   CompressChunkMessage,
   ChunkCompleteMessage,
   MergeChunksMessage,
@@ -24,7 +23,7 @@ import type {
 import { CompressionError } from '../api/types';
 import { ProgressTracker } from './progress';
 import { getPresetConfigWithOverrides, getPresetFallbackChain } from './presets';
-import { handleErrorWithGracefulDegradation, withTimeout } from './error-handler';
+import { handleErrorWithGracefulDegradation } from './error-handler';
 import { isValidPDF, countPages, extractPages, extractMetadata, calculateChunkSize } from '../utils/pdf-utils';
 import { clearBuffers, terminateWorker } from '../utils/memory';
 

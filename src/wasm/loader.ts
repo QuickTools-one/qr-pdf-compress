@@ -18,11 +18,11 @@ let loadPromise: Promise<void> | null = null;
 let isReady = false;
 
 /**
- * Default CDN URL for WASM module
- * In production, this should point to your CDN
+ * Default CDN URL for WASM module using jsdelivr
+ * Uses latest version from npm package @quicktoolsone/pdf-compress
  */
-const DEFAULT_WASM_URL = 'https://cdn.example.com/qr-pdf-compress/v1.0.0/pdfcpu.wasm';
-const DEFAULT_WASM_EXEC_URL = 'https://cdn.example.com/qr-pdf-compress/v1.0.0/wasm_exec.js';
+const DEFAULT_WASM_URL = 'https://cdn.jsdelivr.net/npm/@quicktoolsone/pdf-compress@latest/src/wasm/build/pdfcpu.wasm';
+const DEFAULT_WASM_EXEC_URL = 'https://cdn.jsdelivr.net/npm/@quicktoolsone/pdf-compress@latest/src/wasm/build/wasm_exec.js';
 
 /**
  * Loads the WASM module from the specified URL

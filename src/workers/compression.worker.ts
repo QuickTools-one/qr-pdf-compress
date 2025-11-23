@@ -99,10 +99,10 @@ function postProgress(progress: number, message?: string): void {
 }
 
 // Handle worker errors
-self.onerror = (error) => {
+self.onerror = (event: string | Event) => {
   const errorMessage: WorkerErrorMessage = {
     type: 'error',
-    error: error.message || 'Worker error',
+    error: typeof event === 'string' ? event : ((event as ErrorEvent).message || 'Worker error'),
     phase: 'compressing',
   };
 

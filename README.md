@@ -1,9 +1,11 @@
-# @quicktools/pdf-compress
+# @quicktoolsone/pdf-compress
 
 > WebAssembly-based, fully client-side PDF compression library for modern web applications
 
-[![npm version](https://img.shields.io/npm/v/@quicktools/pdf-compress.svg)](https://www.npmjs.com/package/@quicktools/pdf-compress)
+[![npm version](https://img.shields.io/npm/v/@quicktoolsone/pdf-compress.svg)](https://www.npmjs.com/package/@quicktoolsone/pdf-compress)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+**Part of [QuickTools.one](https://quicktools.one)** - Privacy-focused browser-based tools for everyday file manipulation. All processing happens entirely in your browser, ensuring your files never leave your device.
 
 ## Features
 
@@ -18,7 +20,7 @@
 ## Installation
 
 ```bash
-npm install @quicktools/pdf-compress
+npm install @quicktoolsone/pdf-compress
 ```
 
 The `pdf-lib` dependency is automatically included.
@@ -26,7 +28,7 @@ The `pdf-lib` dependency is automatically included.
 ## Quick Start
 
 ```typescript
-import { compress } from '@quicktools/pdf-compress';
+import { compress } from '@quicktoolsone/pdf-compress';
 
 // Load PDF file
 const file = await fetch('document.pdf').then(r => r.arrayBuffer());
@@ -61,7 +63,7 @@ Optimizes PDF structure without quality loss. Best for documents with text and v
 ```typescript
 const result = await compress(pdfBuffer, { preset: 'lossless' });
 // or
-import { compressLossless } from '@quicktools/pdf-compress';
+import { compressLossless } from '@quicktoolsone/pdf-compress';
 const result = await compressLossless(pdfBuffer);
 ```
 
@@ -71,7 +73,7 @@ Smart image compression with minimal quality impact. Preserves text and vectors.
 ```typescript
 const result = await compress(pdfBuffer, { preset: 'balanced' });
 // or
-import { compressBalanced } from '@quicktools/pdf-compress';
+import { compressBalanced } from '@quicktoolsone/pdf-compress';
 const result = await compressBalanced(pdfBuffer);
 ```
 
@@ -81,14 +83,14 @@ Aggressive compression with optional rasterization. May reduce image quality.
 ```typescript
 const result = await compress(pdfBuffer, { preset: 'max' });
 // or
-import { compressMax } from '@quicktools/pdf-compress';
+import { compressMax } from '@quicktoolsone/pdf-compress';
 const result = await compressMax(pdfBuffer);
 ```
 
 ## Advanced Options
 
 ```typescript
-import { compress } from '@quicktools/pdf-compress';
+import { compress } from '@quicktoolsone/pdf-compress';
 
 const result = await compress(pdfBuffer, {
   preset: 'balanced',
@@ -104,8 +106,8 @@ const result = await compress(pdfBuffer, {
     }
   },
 
-  // Custom WASM URL (optional)
-  wasmUrl: 'https://your-cdn.com/pdfcpu.wasm',
+  // Custom WASM URL (optional, defaults to jsdelivr CDN)
+  wasmUrl: 'https://cdn.jsdelivr.net/npm/@quicktoolsone/pdf-compress@1.0.0/src/wasm/build/pdfcpu.wasm',
 
   // Graceful degradation (default: true)
   gracefulDegradation: true,
@@ -132,7 +134,7 @@ const result = await compress(pdfBuffer, {
 ### React
 
 ```typescript
-import { compress } from '@quicktools/pdf-compress';
+import { compress } from '@quicktoolsone/pdf-compress';
 import { useState } from 'react';
 
 function PDFCompressor() {
@@ -177,7 +179,7 @@ function PDFCompressor() {
 ```typescript
 'use client'
 
-import { compress } from '@quicktools/pdf-compress';
+import { compress } from '@quicktoolsone/pdf-compress';
 
 export default function CompressPage() {
   async function handleCompress(file: File) {
@@ -214,7 +216,7 @@ export default function CompressPage() {
   <div id="result"></div>
 
   <script type="module">
-    import { compress } from '@quicktools/pdf-compress';
+    import { compress } from '@quicktoolsone/pdf-compress';
 
     document.getElementById('pdfInput').addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -288,7 +290,7 @@ This architecture enables processing of 300-1000+ page PDFs even on mobile devic
 ## Error Handling
 
 ```typescript
-import { compress, CompressionError } from '@quicktools/pdf-compress';
+import { compress, CompressionError } from '@quicktoolsone/pdf-compress';
 
 try {
   const result = await compress(pdfBuffer, { preset: 'max' });
@@ -336,9 +338,29 @@ Max fails → Balanced → Lossless → Return original PDF
 
 ### WASM Module
 
-⚠️ **This library requires the pdfcpu WASM module to function**. The current implementation includes a mock compression engine for development purposes.
+The library automatically loads the pdfcpu WASM module from **jsdelivr CDN** when you call the compression functions. No additional setup is required - it just works!
 
-To build the actual WASM module:
+**CDN Details:**
+- Default URL: `https://cdn.jsdelivr.net/npm/@quicktoolsone/pdf-compress@latest/src/wasm/build/pdfcpu.wasm`
+- WASM size: ~14 MB (served with gzip compression by jsdelivr)
+- First load: Downloads from CDN and caches in browser
+- Subsequent loads: Uses browser cache
+
+**Custom CDN (optional):**
+If you want to self-host the WASM files or use a different CDN:
+
+```typescript
+import { compress } from '@quicktoolsone/pdf-compress';
+
+const result = await compress(pdfBuffer, {
+  preset: 'balanced',
+  wasmUrl: 'https://your-cdn.com/pdfcpu.wasm',
+  wasmExecUrl: 'https://your-cdn.com/wasm_exec.js'
+});
+```
+
+**Building WASM from source:**
+To build the WASM module yourself:
 
 ```bash
 cd wasm-build
@@ -349,8 +371,8 @@ See `wasm-build/README.md` for detailed build instructions.
 
 ### Limitations
 
-- WASM loading requires internet connection (or bundled WASM)
-- Large files (>500 pages) may take several minutes
+- WASM loading requires internet connection on first use (cached afterward)
+- Large files (>500 pages) may take several minutes to process
 - Mobile devices have stricter memory limits
 - Text becomes non-searchable if rasterization is enabled (max preset)
 
@@ -369,6 +391,10 @@ Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidel
 - [pdfcpu](https://github.com/pdfcpu/pdfcpu) - Excellent PDF library in Go
 - [pdf-lib](https://pdf-lib.js.org/) - PDF manipulation in JavaScript
 - Go team for WebAssembly support
+
+## About QuickTools
+
+This library powers the PDF compression tool at [QuickTools.one](https://quicktools.one), a collection of privacy-first browser tools for document and image manipulation. Try the online version with a simple drag-and-drop interface, or integrate this library into your own applications.
 
 ## Support
 
