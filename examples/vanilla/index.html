@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR-PDF-Compress Demo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      background: #f9f9f9;
+    }
+    input[type="file"] {
+      margin: 20px 0;
+    }
+    .preset-selector {
+      margin: 20px 0;
+    }
+    .preset-selector label {
+      margin: 0 10px;
+    }
+    progress {
+      width: 100%;
+      height: 30px;
+      margin: 20px 0;
+      display: none;
+    }
+    progress.active {
+      display: block;
+    }
+    .stats {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      text-align: left;
+      display: none;
+    }
+    .stats.active {
+      display: block;
+    }
+    .stats h3 {
+      margin-top: 0;
+    }
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .error {
+      color: #d32f2f;
+      padding: 10px;
+      background: #ffebee;
+      border-radius: 4px;
+      margin: 10px 0;
+      display: none;
+    }
+    .error.active {
+      display: block;
+    }
+    button {
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px;
+    }
+    button:hover {
+      background: #1565c0;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>📦 QR-PDF-Compress Demo</h1>
+  <p>Client-side PDF compression using WebAssembly. Your files never leave your device.</p>
+
+  <div class="container">
+    <h2>Select a PDF to compress</h2>
+
+    <div class="preset-selector">
+      <label>
+        <input type="radio" name="preset" value="lossless">
+        Lossless (5-30%)
+      </label>
+      <label>
+        <input type="radio" name="preset" value="balanced" checked>
+        Balanced (30-70%) ⭐
+      </label>
+      <label>
+        <input type="radio" name="preset" value="max">
+        Max (60-90%)
+      </label>
+    </div>
+
+    <input type="file" id="pdfInput" accept="application/pdf">
+
+    <progress id="progress" value="0" max="100"></progress>
+    <div id="progressText"></div>
+
+    <div id="error" class="error"></div>
+
+    <div id="stats" class="stats">
+      <h3>Compression Results</h3>
+      <div class="stats-row">
+        <span>Original Size:</span>
+        <span id="originalSize">-</span>
+      </div>
+      <div class="stats-row">
+        <span>Compressed Size:</span>
+        <span id="compressedSize">-</span>
+      </div>
+      <div class="stats-row">
+        <span>Bytes Saved:</span>
+        <span id="bytesSaved">-</span>
+      </div>
+      <div class="stats-row">
+        <span>Percentage Saved:</span>
+        <span id="percentageSaved">-</span>
+      </div>
+      <div class="stats-row">
+        <span>Processing Time:</span>
+        <span id="processingTime">-</span>
+      </div>
+      <div class="stats-row">
+        <span>Preset Used:</span>
+        <span id="presetUsed">-</span>
+      </div>
+      <button id="downloadBtn">Download Compressed PDF</button>
+    </div>
+  </div>
+
+  <script type="module">
+    // This would import from the built library
+    // For demo purposes, this shows the expected API usage
+    console.log('QR-PDF-Compress demo loaded');
+
+    const fileInput = document.getElementById('pdfInput');
+    const progress = document.getElementById('progress');
+    const progressText = document.getElementById('progressText');
+    const errorDiv = document.getElementById('error');
+    const statsDiv = document.getElementById('stats');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    let compressedPdfBlob = null;
+
+    // Mock compress function (replace with actual import when built)
+    async function compress(buffer, options) {
+      // This would be: import { compress } from 'qr-pdf-compress';
+      console.log('Compressing with preset:', options.preset);
+
+      // Simulate compression
+      return new Promise((resolve) => {
+        let currentProgress = 0;
+        const interval = setInterval(() => {
+          currentProgress += 10;
+          if (options.onProgress) {
+            options.onProgress({
+              phase: currentProgress < 90 ? 'compressing' : 'merging',
+              progress: currentProgress,
+            });
+          }
+
+          if (currentProgress >= 100) {
+            clearInterval(interval);
+            resolve({
+              pdf: buffer, // Mock: return same buffer
+              stats: {
+                originalSize: buffer.byteLength,
+                compressedSize: Math.floor(buffer.byteLength * 0.6),
+                bytesSaved: Math.floor(buffer.byteLength * 0.4),
+                percentageSaved: 40,
+                processingTime: 2000,
+                presetUsed: options.preset,
+                ratio: 0.6,
+                chunksProcessed: 5,
+              },
+            });
+          }
+        }, 200);
+      });
+    }
+
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Reset UI
+      errorDiv.classList.remove('active');
+      statsDiv.classList.remove('active');
+      progress.classList.add('active');
+      progress.value = 0;
+
+      try {
+        const buffer = await file.arrayBuffer();
+        const preset = document.querySelector('input[name="preset"]:checked').value;
+
+        const result = await compress(buffer, {
+          preset,
+          onProgress: (event) => {
+            progress.value = event.progress;
+            progressText.textContent = `${event.phase}: ${event.progress.toFixed(0)}%`;
+          },
+        });
+
+        // Show stats
+        document.getElementById('originalSize').textContent = formatBytes(result.stats.originalSize);
+        document.getElementById('compressedSize').textContent = formatBytes(result.stats.compressedSize);
+        document.getElementById('bytesSaved').textContent = formatBytes(result.stats.bytesSaved);
+        document.getElementById('percentageSaved').textContent = result.stats.percentageSaved.toFixed(1) + '%';
+        document.getElementById('processingTime').textContent = (result.stats.processingTime / 1000).toFixed(2) + 's';
+        document.getElementById('presetUsed').textContent = result.stats.presetUsed;
+
+        statsDiv.classList.add('active');
+        progress.classList.remove('active');
+        progressText.textContent = '';
+
+        // Store for download
+        compressedPdfBlob = new Blob([result.pdf], { type: 'application/pdf' });
+      } catch (error) {
+        errorDiv.textContent = `Error: ${error.message}`;
+        errorDiv.classList.add('active');
+        progress.classList.remove('active');
+        progressText.textContent = '';
+      }
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      if (!compressedPdfBlob) return;
+
+      const url = URL.createObjectURL(compressedPdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'compressed.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+  </script>
+</body>
+</html>
