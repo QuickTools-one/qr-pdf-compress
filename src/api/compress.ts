@@ -4,8 +4,7 @@
 
 import type { CompressionOptions, CompressionResult } from './types';
 import { CompressionError } from './types';
-import { orchestrateCompression } from '../core/orchestrator';
-import { loadWASM } from '../wasm/loader';
+import { compressPDF } from '../core/pdf-lib-compressor';
 
 /**
  * Compresses a PDF file using the specified preset and options
@@ -16,7 +15,7 @@ import { loadWASM } from '../wasm/loader';
  *
  * @example
  * ```typescript
- * import { compress } from 'qr-pdf-compress';
+ * import { compress } from '@quicktoolsone/pdf-compress';
  *
  * const file = await fetch('document.pdf').then(r => r.arrayBuffer());
  * const result = await compress(file, {
@@ -63,30 +62,27 @@ export async function compress(
     throw new TypeError(`Invalid preset: ${fullOptions.preset}. Must be 'lossless', 'balanced', or 'max'.`);
   }
 
-  // Load WASM module (lazy load on first use)
+  // Initialize
   if (fullOptions.onProgress) {
     fullOptions.onProgress({
       phase: 'chunking',
       progress: 0,
-      message: 'Initializing compression engine...',
+      message: 'Initializing compression...',
     });
   }
 
   try {
-    // Load WASM (will use cached if already loaded)
-    await loadWASM(fullOptions.wasmUrl, fullOptions.wasmExecUrl);
+    // Compress using pdf-lib
+    return await compressPDF(pdfBuffer, fullOptions);
   } catch (error) {
     throw new CompressionError(
-      'Failed to load compression engine',
+      'Failed to compress PDF',
       fullOptions.preset,
       pdfBuffer.byteLength,
-      'chunking',
+      'compressing',
       error instanceof Error ? error : undefined
     );
   }
-
-  // Start compression
-  return await orchestrateCompression(pdfBuffer, fullOptions);
 }
 
 /**

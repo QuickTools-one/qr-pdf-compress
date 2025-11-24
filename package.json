@@ -1,7 +1,7 @@
 {
   "name": "@quicktoolsone/pdf-compress",
-  "version": "1.0.2",
-  "description": "WebAssembly-based, fully client-side PDF compression library",
+  "version": "2.0.0",
+  "description": "Simple, clean PDF compression library with excellent DX",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -11,12 +11,10 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
-    },
-    "./workers/*": "./dist/workers/*"
+    }
   },
   "files": [
     "dist",
-    "src/wasm/build",
     "README.md",
     "LICENSE"
   ],
@@ -30,11 +28,11 @@
   "keywords": [
     "pdf",
     "compression",
-    "wasm",
-    "webassembly",
+    "optimize",
     "client-side",
     "browser",
-    "pdfcpu"
+    "seo",
+    "pdf-lib"
   ],
   "homepage": "https://quicktools.one",
   "author": {
@@ -43,7 +41,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.0.379"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
