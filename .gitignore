@@ -168,3 +168,4 @@ examples/**/out/
 # Test PDFs (add your test fixtures if they're large)
 tests/fixtures/*.pdf
 !tests/fixtures/small-*.pdf
+.claude/
