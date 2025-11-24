@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(node test-simple.mjs:*)",
+      "Bash(cat:*)",
+      "Bash(./build.sh)",
+      "Bash(go env:*)",
+      "Bash(GOOS=js GOARCH=wasm go build:*)",
+      "Bash(go doc:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:pdfcpu.io)",
+      "Bash(npm install:*)",
+      "Bash(md5:*)",
+      "Bash(npm run dev:*)",
+      "Bash(curl:*)",
+      "Bash(tree:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

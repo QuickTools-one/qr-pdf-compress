@@ -5,20 +5,15 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   build: {
     lib: {
-      entry: {
-        index: resolve(__dirname, 'src/index.ts'),
-        'workers/compression.worker': resolve(__dirname, 'src/workers/compression.worker.ts'),
-        'workers/merge.worker': resolve(__dirname, 'src/workers/merge.worker.ts'),
-      },
-      name: 'QRPDFCompress',
+      entry: resolve(__dirname, 'src/index.ts'),
+      name: 'PDFCompress',
       formats: ['es', 'cjs'],
+      fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
-      external: ['pdf-lib'],
+      external: [],
       output: {
-        globals: {
-          'pdf-lib': 'PDFLib',
-        },
+        globals: {},
       },
     },
     sourcemap: true,
@@ -30,7 +25,4 @@ export default defineConfig({
       rollupTypes: true,
     }),
   ],
-  worker: {
-    format: 'es',
-  },
 });

@@ -1,6 +1,6 @@
 /**
- * QR-PDF-Compress
- * Client-side PDF compression library using WebAssembly
+ * @quicktoolsone/pdf-compress
+ * Simple, clean PDF compression library
  */
 
 // Main API
@@ -17,6 +17,3 @@ export type {
 } from './types';
 
 export { CompressionError } from './types';
-
-// Presets (for reference)
-export { PRESETS, getPresetConfig } from '../core/presets';

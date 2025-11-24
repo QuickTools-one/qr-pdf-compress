@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Compression Test</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    .controls {
+      margin: 20px 0;
+    }
+    progress {
+      width: 100%;
+      height: 30px;
+      margin: 20px 0;
+    }
+    #result {
+      padding: 15px;
+      background: #f0f0f0;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    #error {
+      color: red;
+      padding: 15px;
+      background: #fee;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "pdf-lib": "./node_modules/pdf-lib/es/index.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>PDF Compression Test (v2.0 - Simple)</h1>
+  <p>Clean pdf-lib wrapper - no WASM complexity</p>
+
+  <div class="controls">
+    <input type="file" id="pdfInput" accept="application/pdf">
+    <label>
+      <input type="radio" name="preset" value="lossless"> Lossless
+      <input type="radio" name="preset" value="balanced" checked> Balanced
+      <input type="radio" name="preset" value="max"> Max
+    </label>
+  </div>
+
+  <progress id="progress" value="0" max="100"></progress>
+  <div id="result"></div>
+  <div id="error" style="display: none;"></div>
+
+  <script type="module">
+    // V2.0 - Simplified compression
+    import { compress } from './dist/index.js';
+
+    console.log('✅ Compression library v2.0 loaded (simplified)');
+
+    document.getElementById('pdfInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const resultDiv = document.getElementById('result');
+      const errorDiv = document.getElementById('error');
+      const progress = document.getElementById('progress');
+      const preset = document.querySelector('input[name="preset"]:checked').value;
+
+      resultDiv.textContent = '';
+      errorDiv.style.display = 'none';
+      errorDiv.textContent = '';
+
+      try {
+        console.log(`Compressing ${file.name} (${file.size} bytes) with preset: ${preset}`);
+        const buffer = await file.arrayBuffer();
+
+        const startTime = Date.now();
+        const result = await compress(buffer, {
+          preset,
+          onProgress: (event) => {
+            console.log(event);
+            progress.value = event.progress;
+            if (event.message) {
+              resultDiv.textContent = event.message;
+            }
+          }
+        });
+
+        const duration = Date.now() - startTime;
+        console.log('Compression result:', result);
+
+        resultDiv.innerHTML = `
+          <strong>✅ Compression Complete!</strong><br>
+          Original: ${(result.stats.originalSize / 1024 / 1024).toFixed(2)} MB<br>
+          Compressed: ${(result.stats.compressedSize / 1024 / 1024).toFixed(2)} MB<br>
+          Saved: ${result.stats.percentageSaved.toFixed(1)}% (${(result.stats.bytesSaved / 1024 / 1024).toFixed(2)} MB)<br>
+          Time: ${(duration / 1000).toFixed(2)}s
+        `;
+
+        // Download
+        const blob = new Blob([result.pdf], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `compressed-${preset}-${file.name}`;
+        a.click();
+      } catch (error) {
+        console.error('Compression error:', error);
+        errorDiv.style.display = 'block';
+        errorDiv.textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>
